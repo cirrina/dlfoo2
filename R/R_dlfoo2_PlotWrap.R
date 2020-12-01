@@ -258,7 +258,8 @@ plotViolinScatterRankBarGeneric <- function(
       x_samples <-  unique(intersect(pdata$sample_id, x_df$sample_id))
       my_df <- as.data.frame(
             pdata[match(x_samples, pdata$sample_id),] %>%
-            mutate(annotation = UQ(rlang::sym(pdata.column))) %>%
+            # mutate(annotation = UQ(rlang::sym(pdata.column))) %>%
+            dplyr::rename(annotation=pdata.column) %>%
             #dplyr::select(!!!c("sample_id", pdata.column), everything()))
             dplyr::select(c(sample_id, annotation, everything())))
       #colnames(my_df)[2] <- "annotation"
@@ -462,7 +463,7 @@ plotViolinScatterRankBarGeneric <- function(
    ## Stripchart
     if(plot_type %in% c("stripChart")){
 
-      my_sizes <- my_df %>% group_by(dim2) %>% summarize(num=n())
+      my_sizes <- my_df %>% group_by(dim2) %>% dplyr::summarize(num=n())
       if(axis_names_n){ axis_names <- paste0(my_sizes$dim2, ", ", "n=", my_sizes$num)
          }else{
          axis_names <- paste0(my_sizes$dim2)
@@ -491,7 +492,7 @@ plotViolinScatterRankBarGeneric <- function(
    # Vioin
    if(plot_type %in% c("violinPlot")){
 
-      my_sizes <- my_df %>% group_by(annotation) %>% summarize(num=n())
+      my_sizes <- my_df %>% group_by(annotation) %>% dplyr::summarize(num=n())
       if(axis_names_n){ axis_names <- paste0(my_sizes$annotation, ", ", "n=", my_sizes$num)
          }else{
          axis_names <- paste0(my_sizes$annotation)
@@ -538,7 +539,7 @@ plotViolinScatterRankBarGeneric <- function(
       ftab <- my_df %>% group_by(dim1, annotation) %>% summarise(n=n()) %>% mutate(f=n/sum(n))
       # ftab$annotation <- factor(ftab$annotation, levels=rev(ftab$annotation))
       # ftab <- ftab %>% arrange(!annotation)
-      my_sizes <- my_df %>% group_by(dim1) %>% summarize(num=n())
+      my_sizes <- my_df %>% group_by(dim1) %>% dplyr::summarize(num=n())
       axis_names <- paste0(my_sizes$dim1, ", ", "n=", my_sizes$num)
 
       if(barplot.y.freq == T ){

@@ -10,7 +10,7 @@ Encoding: UTF-8
 LazyData: true
 Depends: DBI, AnnotationDbi, Biobase, BiocGenerics, GenomicRanges, ggplot2, GenomeInfoDb
 Imports: 
-    RColorBrewer
+    RColorBrewer, coloRamps, ghibli
 Suggests:
     knitr,
     rmarkdown,
