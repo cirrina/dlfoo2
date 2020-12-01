@@ -1,0 +1,19 @@
+Package: dlfoo2
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.2.1
+Author: David Lindgren
+Maintainer: David Lindgren <david.lindgren@med.lu.se>
+Description: Just a collection of misc functions to use for inhouse scripting.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Depends: DBI, AnnotationDbi, Biobase, BiocGenerics, GenomicRanges, ggplot2, GenomeInfoDb
+Imports: 
+    RColorBrewer
+Suggests:
+    knitr,
+    rmarkdown,
+    survminer
+VignetteBuilder: knitr
+RoxygenNote: 7.1.1

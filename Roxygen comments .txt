@@ -1,0 +1,67 @@
+Function Families
+
+
+#' @family old functions
+
+
+#' @family eset
+#' @family granges
+#' @family genoset
+#' @family seurat
+
+
+#' @family info
+#' @family feature annotation
+#' @family plot functions
+#' @family plot wraps
+#' @family analysis
+#' @family transformation
+#' @family normalization
+#' @family filter
+#' @family misc
+#' @family import
+
+#' @family clinical
+
+#' @family genomics
+#' @family methylation
+#' @family gene expression
+#' @family chip
+#' @family bed
+#' @family tcga
+#' @family gtex
+#' @family ccle
+
+
+' @return a list with 5 slots:
+#' \itemize{
+#'   \item 
+#'   \item 
+#'   \item 
+#'   \item 
+#'   \item 
+#' }
+
+
+
+#' @description tSNE Aanalysis using \code{\link[Packagename]{functionname}} function in rtsne package.
+
+
+#' Prices of 50,000 round cut diamonds.
+#'
+#' A dataset containing the prices and other attributes of almost 54,000
+#' diamonds.
+#'
+#' @format A data frame with 53940 rows and 10 variables:
+#' \describe{
+#'   \item{price}{price, in US dollars}
+#'   \item{carat}{weight of the diamond, in carats}
+#'   ...
+#' }
+#' @source \url{http://www.diamondse.info/}
+"diamonds"
+
+
+#' \itemize{
+#'   \item _fgsea_allOntologies: tab delimited text file with all significant ontologies.
+#' }

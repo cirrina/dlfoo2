@@ -1,0 +1,610 @@
+---
+title: "dlfoo2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{dlfoo2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r style, echo = FALSE, results = 'asis'}
+  BiocStyle::markdown()
+```
+
+```{r setup}
+library(dlfoo2)
+```
+
+
+# PLOT WRAPS
+
+## Chords & alluvials
+### chordPlot_ccHCA_to_reTax
+````
+chordPlot_ccHCA_to_reTax(
+   plot.name = "temp",
+   plot.dir = "~/PROJECTS/RCC_ccpRCC_2019/reTaxonomy/Figures/",
+   cc.dir = "~/PROJECTS/RCC_ccpRCC_2019/ConsensusClust/ConsensusCluster_rcc_t_me_589set_2065genes_reps.1000_maxK.25_innerLinkage.ward_sd.0.01/",
+   cc.k = 25,
+   group2_levels = c("outlier","metanephric",  "mtscRCC", "dCIMP", "mesRCC", "ccpRCC","chONC", "pONC"), # "Uro"
+   group_names = c("cc","retax"),
+   scale_factors = c(1, 3),
+   color_key=NULL
+)
+````
+```{r fig.width=7,fig.height=7, echo=FALSE}
+# library(png)
+# library(grid)
+# img <- readPNG("/Users/david/R_PKG/dlfoo2/vignettes/vignette_figs/chordPlot_ccHCA_to_reTax.png")
+#  grid.raster(img)
+```
+
+## Enrichment
+### enrichmentPlot_bubble
+input is dataframe with, group, term, n, and p columns
+````
+enrichmentPlot_bubble(
+      ea.tab=NULL, size, pval,
+      order.by.clustering=T,
+      pval.pal = c(rev(RColorBrewer::brewer.pal(9,"YlOrRd")[3:9]), RColorBrewer::brewer.pal(9,"PuBuGn")[3:9]),
+      reverse.x=F, reverse.y=F
+   )
+````
+```{r fig.width=7,fig.height=4, echo=FALSE}
+# library(png)
+# library(grid)
+# img <- readPNG("/Users/david/R_PKG/dlfoo2/vignettes/vignette_figs/enrichmentPlot_bubble.png")
+#  grid.raster(img)
+```
+
+## Scatterplots 
+
+### scatterPoint_annotationPlot
+For scatterplot of dim-reductuion data (tsne, umap, pca ...). Also plots gradients and labels individual samples
+````
+# umap_gex_pancan <- readRDS("~/PROJECTS/RCC_ccpRCC_2019/UMAP/mRNA/umap_PanCanGDC_Center_sd1_6211genes.rds")
+#x <- umap_gex_pancan
+# str(umap.res$knn)
+
+scatterPoint_annotationPlot(
+  x, pdata=NULL, annotation.column="tax_simp", my_samples=NULL, plot.title=NULL,
+   my.size=2, my.alpha=0.7, my.stroke=0.05, my.stroke.color="gray10", plot.dims=c(1,2),
+   color.key.annotation=dlfoo2::color_subtypes,
+   do.gradient=T, palette.gradient=rev(dlfoo2::palette_gradients[["red2white2blue"]]),
+   gadient.na.col=NA, gradient.normalize=F, gradient.squish.probs=c(0.05, 0.95),
+   showGuide=T, coord.fixed=T, shape.key=dlfoo2::shape_subtypes, zoom.coord=NULL
+   )
+
+````
+
+```{r fig.width=7,fig.height=6, echo=FALSE}
+# library(png)
+# library(grid)
+# img <- readPNG("/Users/david/R_PKG/dlfoo2/vignettes/vignette_figs/scatterPoint_annotationPlot.png")
+#  grid.raster(img)
+```
+
+### tsnePlot
+now replaced by 
+
+### tsnePlot_specia
+obsolete function
+
+
+## Co-occurrence
+
+### coOccurence_bubble
+Generic plot for plottng co-occurrence freuency matrix using Bubble blot
+```{r fig.width=7,fig.height=6, echo=FALSE}
+# library(png)
+# library(grid)
+# img <- readPNG("/Users/david/R_PKG/dlfoo2/vignettes/vignette_figs/CoOccurrencePlots_ConsensusClusters.png")
+#  grid.raster(img)
+```
+
+
+## genome
+### segmentPlotter
+
+
+## heatmaps
+### meHeatmapRCC
+````
+# x.me <- readRDS("~/RESOURCES/Methylation_450/Analyses/VMP_CorrGex/utc_me_1126set_VMP_CorrGEX/utc_me_1126set_ECR.rds")
+# x.gex <- dltcgaDataGDC::utc_nt[,intersect(colnames(x.me), sampleNames(dltcgaDataGDC::utc_nt))] # assayData: 19676 features, 1126 samples
+#   x.me <- x.me[,sampleNames(x.gex)]
+# x.me <- x.me[1:1000]
+#   identical(colnames(x.me), sampleNames(x.gex))
+#   colnames(x.me)
+#   dlfoo2::meHeatmapRCC(x.me, runFolder = "~/RESOURCES/Methylation_450/Analyses/VMP_CorrGex/utc_me_1126set_VMP_CorrGEX/", runName = "UTC_me1126set_meHeatmaps")
+# runFolder = "~/RESOURCES/Methylation_450/Analyses/VMP_CorrGex/utc_me_1126set_VMP_CorrGEX/"
+# runName = "UTC_me1126set_meHeatmaps"
+
+meHeatmapRCC(
+   x.me, runName, runFolder,
+   clusterFeatures_k = 25,
+   clusterSamples_k = 25,
+   amapDist = c("pearson","euclidean","manhattan","correlation"),
+   palNo=3, palSat=c(0, 1)
+   )
+````
+### me2gexHeatmapRCC
+Function to perform a standard HCA and heatmap plot of meatched me/gex data using RCC (and bladder) taxonomy. Saves .png, .pdf and cluster trees (.rds) to file. Requires genoset with ECR tab as input
+````
+me2gexHeatmapRCC(
+   x.me, x.gex,
+   runName, runFolder,
+   clusterFeatures_k = 25,
+   clusterSamples_k = 25,
+   amapDist = c("pearson","euclidean","manhattan","correlation"),
+   palNo=3, palSat=c(0, 1), palNoGex=1, palSatGex=c(-3,3)
+   )
+````
+### esetHeatmapRCC
+
+````
+# source("~/PROJECTS/RCC_ccpRCC//R_SCRIPTS/R_ccpRCC_SOURCE.R")
+#    require(gplots)
+#
+#    ## Select genes & groups for tree
+#    ## ------------------------
+#    limma_tab <- read.delim(file="~/PROJECTS/RCC_ccpRCC/Limma/Limma_tx4_ccpRCC_cc_p_ch_topTable_fc3.txt", as.is=T)
+#    str(limma_tab)
+#    rownames(limma_tab) <- limma_tab$ENSG
+# my_ensg <- limma_tab$ENSG[limma_tab$fc_3_any]
+# str(my_ensg)
+# pdata <- pdata_utc_nt[pdata_utc_nt$taxonomy_limma %in% c("ccpRCC","chRCC", "ccRCC","pRCC"),]
+# my_es <- utc_nt[my_ensg, pdata$sample_id]
+#  x.eset <- my_es
+#runName <- "Limma_ccpRCC_vs_RCC_lfc3"
+#runFolder <- "~/PROJECTS/RCC_ccpRCC/Limma/HCA_Limma/"
+
+esetHeatmapRCC(
+   x.eset, runName, runFolder,
+   clusterFeatures_k = 25,
+   clusterSamples_k = 25,
+   amapDist = c("pearson","euclidean","manhattan","correlation"),
+   palNo=3, palSat=c(-3, 3)
+   )
+
+````
+
+### esetGexSignatures
+````
+   # source("~/PROJECTS/RCC_ccpRCC//R_SCRIPTS/R_ccpRCC_SOURCE.R")
+   # pdata <- pdata_panCanGex[pdata_panCanGex$taxonomy_limma %in% c("ccpRCC","chRCC", "ccRCC","pRCC"),]
+   # my_es <- utc_nt[, pdata$sample_id]
+   # x.eset <- my_es
+   # runName <- "Signature_Temp"
+   # runFolder <- "~/PROJECTS/RCC_ccpRCC/cell_type_signatures/"
+
+
+
+
+#   kidney_sigs <- readRDS(file="~/PROJECTS/RCC_ccpRCC/cell_type_signatures/cellTypeSignatures_kidney.rds")
+#  signature.object <- kidney_sigs$young_2018_litterature$signature
+
+````
+
+### heatmap.3
+Uses code from <https://raw.githubusercontent.com/obigriffith/biostar-tutorials/master/Heatmaps/heatmap.3.R>
+
+## Boxplots, barplots & violins
+### VlnPlot_seurat_dl
+wrapper for VlnPlot in Seurat package. previously VlnPlot.dl
+````
+VlnPlot.dl(
+  gene.vec, color.vec, x.text.size=12, y.title.size=12, ...)
+
+````
+
+### geneplotPanTCGA_violin
+````
+# highlight.samples = c("KIRP_TP_5883", "KIRP_TP_8312", "KIRP_TP_A9JN")
+# ensg="ENSG00000101076" (HNF4a)
+# default.taxonomy = "taxonomy_published"
+
+geneplotPanTCGA_violin(
+    ensg=NULL, highlight.samples = NULL, individual.sample=NULL, default.taxonomy="taxonomy_published", ...)
+
+````
+### geneplotTcgaRccTax
+boxplot single gene epxression in TCGA urinary tract (UTC) data
+
+### geneplotTcgaPan
+boxplot gene epxression in TCGA PAN tissues
+
+### geneplotGtex
+boxplot gene epxression in GTEX data set
+
+
+### corrGtex
+correlation gene epxression in GTEX data set
+
+
+### corrCcle
+boxplot gene epxression in CCLE data set
+
+### geneplotCcle1156
+boxplot gene epxression in CCLE data set
+
+
+### geneplotKnepper
+barplot gene epxression in Knepper Rat nephron data
+```
+# apa <- dlfoo2::featureGetBM(query.id = "NOTCH3", query.type = "gene_symbol")
+#dlfoo2::geneplotTcgaClinical("ENSG00000074181")
+# ensg <- "ENSG00000074181"
+# my_samples <- sampleNames(dlfoo2data::utc_nt)[dlfoo2data::pdata_panCanGex$chen_taxonomy %in% c("CC-e.1","CC-e.2","CC-e.3")]
+# geneplotTcgaClinical2(ensg="ENSG00000050165",my_samples = my_samples)
+ 
+ tcgaSurvPlot2(ensg, my_samples=NULL)
+
+````
+
+
+
+
+## Survplots and clinical
+
+### tcgaSurvPlot
+
+### tcgaSurvPlot2
+plot survival data TCGA PAN tissues. Select samples using my_samples and ensg for gene
+
+
+### geneplotTcgaClinical
+plot clinical data TCGA PAN tissues
+
+
+
+
+
+# SHINY apps
+
+### scatterPoint_annotationPlot_SHINY
+
+
+# ANALYSIS WRAPS
+Wrappers for analysis functions in other packages
+
+## Dim reduction
+Dimensionality reduction of GEX, methlylation data etc, such as tSNE uMAP and so on.
+
+### tsneMe
+wrapper for tSNE analysis of methylation GenoSets. 
+````
+#    x.me <- readRDS("~/RESOURCES/Methylation_450/PanGDAC/pan_gdac_9739set_ECR.rds")
+#    x.me <- x.me[1:100,1:100]
+#    perplex <- c(10,25)
+#    runName = "RCC_9739set_ECR_tSNE_test"
+# runFolder = "~/PROJECTS/RCC_ccpRCC_2019/Methylation/tSNE/"
+#
+
+tsneMe(
+  x.me, runName, runFolder,
+  perplex = seq(5, 50, by = 5), doPlotTaxonomy=F,
+  theta=0.5, max_iter=5000, floor_value=NULL, z_score=F,
+  log=F, variance=NULL)
+````
+
+
+### tsneGex
+wrapper for tSNE analysis of expression sets 
+````
+# mir_utc_nt <- readRDS(file="~/PROJECTS/RCC_ccpRCC/miRNA/mir_utc_nt.rds")
+# exprs(mir_utc_nt) <- log(exprs(mir_utc_nt)+1, 2)
+# x <- mir_utc_nt
+#runName = "tsne_mir_utc_nt"
+# runFolder = "~/PROJECTS/RCC_ccpRCC/miRNA/tSNE/"
+
+tsneGex(
+    eset, perplex = seq(5, 50, by = 5), runName, runFolder,
+    doPlotTaxonomy=F, theta=0.5, max_iter=5000, floor_value=NULL, z_score=F,
+    log=F, variance=NULL)
+````
+
+
+### tsne2df
+produce a data frame from a tSNE results list
+````
+produce a data frame from a tSNE results list
+````
+
+### umap2df
+produce a data frame from an umap results object
+````
+umap2df()
+````
+
+### pca2df
+````
+pca2df()
+````
+
+### hca
+Perform Hierarchical Cluster Aanalysis
+```
+hca(
+x, cor.method = "pearson", linkage = "ward.D", plot.dendogram = TRUE, sample.names = NULL, 
+   my.plot.args = list(cex = 0.5, main = NULL), new = FALSE, mar = c(4,4, 2, 1), hang = -1) {
+```
+
+### dend_classify
+Classify a dendogram into n=k subclusters 
+````
+dend_classify(dend, k)
+````
+
+### dend_reorder
+Reorder clusters within a dendrogram.
+
+### dend_rev_clusters
+
+### ConsensusClusterPlus.dl
+Wrapper for ConsensusClusterPlus analysis
+
+### ConsensusCluster_process
+wrapper that process resuts from ConsensusClusterPlus analyses
+
+## Enrichment Analyses
+
+### enrichmentAnalysis_ClusterProfiler
+wrapper that perform Enrichment analysis using ClusterProfiler and DOSE packages
+```
+   # source("~/PROJECTS/RCC_cc_eos_HN/R_scripts/R_cc_eos_v3_SOURCE.R")
+   #gene.list = eos_list
+   #run.folder = "~/PROJECTS/RCC_cc_eos_HN/Limma/Enrichment"
+   #run.name = "Limma_sd1_fd02"
+   #term.names =  c("c2","c3.tft","c6","c7","c5.cc","c5.bp","c5.mf")
+   
+enrichmentAnalysis_ClusterProfiler(
+   gene.list = NULL,
+   run.folder = NULL,
+   run.name = NULL,
+   term.names =  c("c2","c3.tft","c6","c7","c5.cc","c5.bp","c5.mf"),
+   min.genes.in.term = 3)
+   
+````
+
+### enrichmentAnalysis_fgsea
+wrapper that perform Enrichment analysis fgsea using rank values
+<https://bioinformatics-core-shared-training.github.io/cruk-summer-school-2018/RNASeq2018/html/06_Gene_set_testing.nb.html>
+<https://bioconductor.org/packages/release/bioc/manuals/fgsea/man/fgsea.pdf>
+
+````
+enrichmentAnalysis_fgsea(
+   rank.list = NULL,
+   my_ontologies = c("h.all","c2.cp.biocarta","c2.cp.kegg","c2.cp.reactome","c3.tft","c5.bp","c5.cc","c5.mf"),
+   minSize=10, maxSize = 500, nperm=1000
+   )
+`````
+
+
+# MISC
+
+## Misc
+
+### cormat2indiv
+Uses a correlation martrix to create a table with correlations for all possible combinations
+
+## Plotting
+
+### ggPlotEmpty
+generate an empty ggplot  
+````
+ggPlotEmpty()
+````
+
+## TCGA
+### tcgaBarcodeSplitter
+````
+tcgaBarcodeSplitter()
+````
+### tcgaBarcodeSplitter_v2
+if length of barcode is not 28
+````
+tcgaBarcodeSplitter_v2()
+`````
+
+### tcga_shortname
+````
+tcga_shortname(barcode, project, program="TCGA", ...)
+````
+### tcgaPdataPanCan
+
+````
+
+#apa <- read.delim("~/PROJECTS/miRNA_FusionGene_HP/miRNA_expression/expression_miRBase22_TCGA-bladder_approx_counts.txt", as.is=T)
+#apa <- colnames(apa)
+# aliquot.barcode <- apa
+
+tcgaPdataPanCan(
+      aliquot.barcode,
+      platform = NULL
+   )
+
+````
+
+# IMPORT, PARSING & EXPORT 
+
+## Methylation data
+
+### meParseGDACv2
+initial parsing of methylation data downloaded from GDAC database
+````
+meParseGDACv2(
+  fileName, runName, projectLabel=NULL,
+  runFolder="/Volumes/MacPro2TB/RESOURCES/Methylation_450/ProcessedData/GDAC_humanmethylation450/")
+````
+
+### meParseInhouseBeadStudio 
+parse beadstudio to genoSet
+````
+meParseInhouseBeadStudio(
+  fileName, runName, projectLabel=NULL, 
+  runFolder="/Volumes/MacPro2TB/RESOURCES/Methylation_450/ProcessedData/")
+````
+
+### meParseBeadStudio 
+parse beadstudio to genoSet
+````
+meParseBeadStudio(
+  fileName, runName, projectLabel=NULL, 
+  runFolder="/Volumes/MacPro2TB/RESOURCES/Methylation_450/ProcessedData/")
+````
+
+## Download scripts
+### get.HPA.images
+````
+get.HPA.images(
+   symbol = NULL,
+   run.name = NULL,
+   hpa.filePaths.file = '~/RESOURCES/HPR/proteinatlas_v13_2011127.xml_all_tissues_normal_filePaths.Rdata',
+   tissue.type = 'kidney',
+   hpa.images.dir = '/Volumes/MacPro2TB//RAW DATA/HPA/HPA_IMAGES/', # default dir to store all images downloaded from HPA url
+   out.dir = '/Volumes//MacPro2TB//RAW DATA/HPA/HPA_images_geneSignatures/',
+   copy.to.out.dir = F,
+   plot.to.file = T)
+````
+
+
+
+
+# METHYLATION
+
+### meMergeGenoSetsBeta
+Merge a list of GenoSets into one GenoSet object 
+````
+meMergeGenoSetsBeta(gs_list)
+````
+
+### meNormalizeBeta 
+Normalize Illumina Methylation Ringner/Staaf. Input should be a GenoSet
+````
+meNormalizeBeta(
+x, runName, runFolder, projectLabel=NULL, 
+probe.annotations.file='~/RESOURCES/Annotation Files/probe.annotations.Methylation.Ringner.20031112.Rdata')
+````
+
+### meNormalizeBetaV2 
+Filemame of GenoSet input instead of object. Normalize Illumina Methylation Ringner/Staaf. Input should be a GenoSet
+````
+meNormalizeBetaV2(
+  fileName, runFolder, projectLabel=NULL, 
+  probe.annotations.file='~/RESOURCES/Annotation Files/probe.annotations.Methylation.Ringner.20031112.Rdata')
+
+````
+
+### meFilterBetaNa
+Filter methylation GenoSet to remoce beta value features with NA
+```
+meFilterBetaNa(x, na.filter=0.5)
+````
+
+### meFilterVMF
+FIlter GenoSet for keeping heghest Varying Methylated features
+````
+meFilterVMF (
+  x,
+  projectLabel = NULL,
+  vmfQuantile = c(0.5,0.95), vmfBetaCut=0.1,
+  naFilter = 0
+   )
+`````
+
+### meMergeCpGs
+Merge CpGs beta values within a GenoSet that vary consistantly across data set.
+````
+meMergeCpGs(
+    x, projectLabel = NULL, mergeCpGwindow=50, naFilter = NULL
+   )
+````
+
+### gsSinkGenosetDescription
+````
+gsSinkGenosetDescription(file.name)
+`````
+
+### meAnalysisCorrGex
+Calculate all correlation pairs between CpG beta in a genoset and gene expression in expressionSet
+````
+meAnalysisCorrGex(
+    x.me, x.gex,
+   runName, runFolder,
+   gexSDcut=0.25,
+   corWindow=1e6
+   )
+````
+
+### meAnalysisCorrGexRandom
+To use with meAnalysisCorrGex function. calculate baseline for correlation analysis
+```
+  x.me <- readRDS(file="/Volumes/MacPro2TB/RESOURCES/Methylation_450/ProcessedData/panGDAC/pan_gdac_1072set_VMP.rds")
+  #x.gex <- dltcgaDataGDC::utc_nt[,intersect(colnames(x.me), sampleNames(dltcgaDataGDC::utc_nt))] # assayData: 19676 features, 1126 samples
+  x.gex <- dlfoo2data::pan_gdc[,intersect(colnames(x.me), sampleNames(dlfoo2data::pan_gdc))] # assayData: 19676 features, 1126 samples
+  x.me <- x.me[,sampleNames(x.gex)]
+  identical(colnames(x.me), sampleNames(x.gex))
+
+  dlfoo2::meAnalysisCorrGexRandom(x.me, x.gex, runName = "pan_gdac_1072set_VMP_CorrGEX_RANDOM")
+ runFolder = "~/RESOURCES/Methylation_450/PanGDAC/"
+```
+
+### meAnalysisCorTableStats
+To run on output from meAnalysisCorrGex. Used to select signficant Expression Correlated Refions (ECRs). Additional inpt must be a run with random generated me::gex correlation pairs used to define sgnificance (from dlfoo2::meAnalysisCorrGexRandom)
+````
+meAnalysisCorTableStats(
+   meAnalysisCorrGexFolder,
+   meAnalysisCorrGexFolderRandom,
+   x.me,
+   densAdjust = 1/5,
+   myQuantiles=c(0.001, 0.999),
+   returnPlots=FALSE
+   )
+
+   # x.me <- readRDS(file="/Volumes/MacPro2TB/RESOURCES/Methylation_450/ProcessedData/panGDAC/pan_gdac_1072set_VMP.rds")
+   # x.gex <- dlfoo2data::pan_gdc[,intersect(colnames(x.me), sampleNames(dlfoo2data::pan_gdc))] # assayData: 19676 features, 1126 samples
+   # x.me <- x.me[,sampleNames(x.gex)]
+   # identical(colnames(x.me), sampleNames(x.gex))
+   #
+
+   # dlfoo2::meAnalysisCorTableStats(
+   #    meAnalysisCorrGexFolder = "~/RESOURCES/Methylation_450/PanGDAC/pan_gdac_1072set_VMP_CorrGEX/",
+   #    x.me=x.me,
+   #    myQuantiles=c(0.001, 0.999),
+   #    meAnalysisCorrGexFolderRandom = "~/RESOURCES/Methylation_450/PanGDAC/VMP_CorrGex_RANDOM/"
+   #       )
+
+
+````
+```{r fig.width=7,fig.height=7, echo=FALSE}
+# library(png)
+# library(grid)
+# img <- readPNG("/Users/david/R_PKG/dlfoo2/vignettes/vignette_figs/meAnalysisCorTableStats.png")
+#  grid.raster(img)
+```
+
+
+### me_getGEO_methylation450
+To import methylation 450 data from GEO soft files using GEquery package
+```
+  me_getGEO_methylation450(
+      geo.id=NULL, 
+      runName=NULL, 
+      runFolder="/Volumes/MacPro2TB/RESOURCES/Methylation_450/Raw_data/", 
+      projectLabel=NULL
+      )
+  
+```
+
+
+
+
